@@ -5,12 +5,12 @@ from pathlib import Path
 CONFIG_FILE = Path("config.json")
 
 DEFAULT_CONFIG = {
-    "ai_provider": "Groq",  # "Groq" or "Gemini"
     "groq_api_key": "",
     "groq_model": "llama-3.3-70b-versatile",
     "tone3000_api_key": "",
     "enable_tone3000": True,
     "enable_cache": True,
+    "enable_demo_mode": False,
     "negative_search_operators": '-NAM -Neural -"Neural Amp Modeler" -ToneHunt -Tone3000 -capture -preset',
 }
 

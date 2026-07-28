@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("NAM Hardware Finder")
-        self.setMinimumSize(740, 640)
+        self.setMinimumSize(760, 640)
 
         self.current_file_path = None
         self.worker = None
@@ -69,18 +69,24 @@ class MainWindow(QMainWindow):
 
         main_layout.addLayout(history_layout)
 
-        # 3. Primary Search Query Box
+        # 3. Primary Search Query Box with DEMO Toggle Button
         search_layout = QHBoxLayout()
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText(
             "Primary Hardware Search Query...")
         self.search_input.returnPressed.connect(self.on_search_clicked)
 
+        # DEMO Mode Toggle Button
+        self.demo_toggle_btn = QPushButton("🎥 DEMO: OFF")
+        self.demo_toggle_btn.setCheckable(True)
+        self.demo_toggle_btn.clicked.connect(self.on_demo_toggle_changed)
+
         self.search_btn = QPushButton("Search All Gear")
         self.search_btn.setObjectName("PrimaryButton")
         self.search_btn.clicked.connect(self.on_search_clicked)
 
         search_layout.addWidget(self.search_input)
+        search_layout.addWidget(self.demo_toggle_btn)
         search_layout.addWidget(self.search_btn)
         main_layout.addLayout(search_layout)
 
@@ -94,7 +100,6 @@ class MainWindow(QMainWindow):
         settings_group = QGroupBox("Groq & App Settings")
         settings_layout = QVBoxLayout(settings_group)
 
-        # Groq Key Input
         groq_layout = QHBoxLayout()
         groq_layout.addWidget(QLabel("Groq API Key:"))
         self.groq_key_input = QLineEdit()
@@ -109,7 +114,6 @@ class MainWindow(QMainWindow):
 
         settings_layout.addLayout(groq_layout)
 
-        # Toggles, Clear Cache, Save Settings
         bottom_settings = QHBoxLayout()
         self.cache_checkbox = QCheckBox("Enable Local Caching")
         self.t3k_checkbox = QCheckBox("Enable Tone3000 Search")
@@ -153,6 +157,45 @@ class MainWindow(QMainWindow):
         self.debug_console.setReadOnly(True)
         self.debug_console.setMaximumHeight(140)
         main_layout.addWidget(self.debug_console)
+
+    def update_demo_btn_style(self):
+        """Applies Amber/Orange styling when DEMO mode is ON."""
+        if self.demo_toggle_btn.isChecked():
+            self.demo_toggle_btn.setText("🎥 DEMO: ON")
+            self.demo_toggle_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #D97706;
+                    border: 1px solid #F59E0B;
+                    color: #FFFFFF;
+                    font-weight: bold;
+                    border-radius: 6px;
+                    padding: 6px 14px;
+                }
+                QPushButton:hover {
+                    background-color: #F59E0B;
+                }
+            """)
+        else:
+            self.demo_toggle_btn.setText("🎥 DEMO: OFF")
+            self.demo_toggle_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #2D2D2D;
+                    border: 1px solid #3D3D3D;
+                    color: #A0A0A0;
+                    border-radius: 6px;
+                    padding: 6px 14px;
+                }
+                QPushButton:hover {
+                    background-color: #383838;
+                    color: #FFFFFF;
+                }
+            """)
+
+    def on_demo_toggle_changed(self):
+        self.update_demo_btn_style()
+        is_on = self.demo_toggle_btn.isChecked()
+        self.log_debug(f"DEMO Mode toggled: {'ON' if is_on else 'OFF'}")
+        self.save_settings_from_ui()
 
     def log_debug(self, message: str):
         timestamp = datetime.now().strftime("%H:%M:%S")
@@ -210,8 +253,11 @@ class MainWindow(QMainWindow):
         tone3000_url = extraction.get("tone3000_url", "")
 
         self.chips_container.render_chips(
-            components, candidate_terms, tone3000_url, extraction.get(
-                "tone3000_matched", False)
+            components,
+            candidate_terms,
+            tone3000_url,
+            extraction.get("tone3000_matched", False),
+            demo_mode_provider=lambda: self.demo_toggle_btn.isChecked(),
         )
 
     def _load_settings_into_ui(self):
@@ -220,15 +266,19 @@ class MainWindow(QMainWindow):
         self.cache_checkbox.setChecked(config.get("enable_cache", True))
         self.t3k_checkbox.setChecked(config.get("enable_tone3000", True))
 
+        is_demo_on = config.get("enable_demo_mode", False)
+        self.demo_toggle_btn.setChecked(is_demo_on)
+        self.update_demo_btn_style()
+
     def save_settings_from_ui(self):
         config = load_config()
         config["groq_api_key"] = self.groq_key_input.text().strip()
         config["enable_cache"] = self.cache_checkbox.isChecked()
         config["enable_tone3000"] = self.t3k_checkbox.isChecked()
+        config["enable_demo_mode"] = self.demo_toggle_btn.isChecked()
 
         if save_config(config):
             self.status_label.setText("Status: Settings saved successfully.")
-            self.log_debug("Settings saved.")
 
     def on_clear_cache_clicked(self):
         if clear_cache():
@@ -297,7 +347,12 @@ class MainWindow(QMainWindow):
         matched = result.get("tone3000_matched", False)
 
         self.chips_container.render_chips(
-            components, candidate_terms, tone3000_url, matched)
+            components,
+            candidate_terms,
+            tone3000_url,
+            matched,
+            demo_mode_provider=lambda: self.demo_toggle_btn.isChecked(),
+        )
 
         match_info = "Tone3000 Matched" if matched else "Groq Extraction"
         self.status_label.setText(
@@ -312,4 +367,5 @@ class MainWindow(QMainWindow):
     def on_search_clicked(self):
         query = self.search_input.text().strip()
         if query:
-            execute_hardware_search(query)
+            execute_hardware_search(
+                query, demo_mode=self.demo_toggle_btn.isChecked())

@@ -3,9 +3,12 @@ import webbrowser
 from core.config_manager import load_config
 
 
-def build_search_url(query: str, include_exclusions: bool = True) -> str:
-    """Builds a Google search URL. Appends negative search operators if requested."""
+def build_search_url(query: str, include_exclusions: bool = True, demo_mode: bool = False) -> str:
+    """Builds a Google search URL, appending DEMO and negative operators if requested."""
     clean_query = query.strip()
+
+    if demo_mode:
+        clean_query = f"{clean_query} DEMO"
 
     if include_exclusions:
         config = load_config()
@@ -30,7 +33,7 @@ def open_in_browser(url: str) -> bool:
         return False
 
 
-def execute_hardware_search(query: str):
+def execute_hardware_search(query: str, demo_mode: bool = False):
     """Utility helper to build and open a hardware query directly."""
-    url = build_search_url(query, include_exclusions=True)
+    url = build_search_url(query, include_exclusions=True, demo_mode=demo_mode)
     open_in_browser(url)

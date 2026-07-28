@@ -14,7 +14,6 @@ class HardwareChipsContainer(QWidget):
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(8)
 
-        # Primary Row
         self.primary_widget = QWidget()
         self.primary_layout = QHBoxLayout(self.primary_widget)
         self.primary_layout.setContentsMargins(0, 0, 0, 0)
@@ -22,7 +21,6 @@ class HardwareChipsContainer(QWidget):
         self.primary_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.main_layout.addWidget(self.primary_widget)
 
-        # Candidate Terms Row
         self.candidate_widget = QWidget()
         self.candidate_layout = QHBoxLayout(self.candidate_widget)
         self.candidate_layout.setContentsMargins(0, 4, 0, 0)
@@ -48,9 +46,13 @@ class HardwareChipsContainer(QWidget):
         candidate_terms: list = None,
         tone3000_url: str = "",
         tone3000_matched: bool = False,
+        demo_mode_provider=None,
     ):
         """Populates dynamic chips for extracted hardware components and candidate hints."""
         self.clear_chips()
+
+        def get_demo_state() -> bool:
+            return demo_mode_provider() if demo_mode_provider else False
 
         # 1. Primary Row Rendering
         if tone3000_matched and tone3000_url:
@@ -95,7 +97,10 @@ class HardwareChipsContainer(QWidget):
             btn = QPushButton(f"{icon} {query}")
             btn.setProperty("class", "HardwareChip")
             btn.setToolTip(f"Search physical {gear_type}: '{query}'")
-            btn.clicked.connect(lambda _, q=query: execute_hardware_search(q))
+            btn.clicked.connect(
+                lambda _, q=query: execute_hardware_search(
+                    q, demo_mode=get_demo_state())
+            )
             self.primary_layout.addWidget(btn)
 
         # 2. Candidate Terms Row Rendering
@@ -125,5 +130,7 @@ class HardwareChipsContainer(QWidget):
                 """)
                 cand_btn.setToolTip(f"Search candidate phrase: '{term}'")
                 cand_btn.clicked.connect(
-                    lambda _, t=term: execute_hardware_search(t))
+                    lambda _, t=term: execute_hardware_search(
+                        t, demo_mode=get_demo_state())
+                )
                 self.candidate_layout.addWidget(cand_btn)
