@@ -6,3 +6,4 @@ config.json
 cache.json
 .env
 .vscode/
+NAM_Lookup.code-workspace
