@@ -11,6 +11,8 @@ DEFAULT_CONFIG = {
     "enable_tone3000": True,
     "enable_cache": True,
     "enable_demo_mode": False,
+    "search_engine": "Google",  # "Google" or "YouTube"
+    "last_open_directory": r"I:\Assorted Synth & DAW\!NAM",
     "negative_search_operators": '-NAM -Neural -"Neural Amp Modeler" -ToneHunt -Tone3000 -capture -preset',
 }
 

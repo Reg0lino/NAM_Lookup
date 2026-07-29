@@ -2,11 +2,15 @@ import json
 from pathlib import Path
 
 
-def parse_nam_file(file_path: Path) -> dict:
+def parse_nam_file(file_path: Path, logger=None) -> dict:
     """
     Parses a local .nam file (which is internally formatted as JSON).
-    Extracts filename, parent folder context, and internal metadata.
+    Extracts filename, parent folder context, and all embedded JSON metadata.
     """
+    def log(msg):
+        if logger:
+            logger(f"[NAMParser] {msg}")
+
     path_obj = Path(file_path)
 
     result = {
@@ -18,6 +22,7 @@ def parse_nam_file(file_path: Path) -> dict:
     }
 
     if not path_obj.exists() or not path_obj.is_file():
+        log(f"File not found: {file_path}")
         return result
 
     try:
@@ -25,28 +30,40 @@ def parse_nam_file(file_path: Path) -> dict:
             data = json.load(f)
             result["raw_json_available"] = True
 
-            # Extract fields from root JSON or nested 'metadata' key
+            # NAM files store metadata under 'metadata' dict or root level
             metadata = data.get("metadata", {})
-            if isinstance(metadata, dict):
-                result["internal_metadata"] = {
-                    "model_name": metadata.get("model_name")
-                    or data.get("model_name", ""),
-                    "author": metadata.get("author") or data.get("author", ""),
-                    "gear": metadata.get("gear") or data.get("gear", ""),
-                    "mode": metadata.get("mode") or data.get("mode", ""),
-                    "dataset_name": metadata.get("dataset_name")
-                    or data.get("dataset_name", ""),
-                }
+            if not isinstance(metadata, dict):
+                metadata = {}
+
+            # Extract standard + extended NAM metadata fields
+            extracted_meta = {
+                "model_name": metadata.get("model_name") or data.get("model_name", ""),
+                "gear": metadata.get("gear") or data.get("gear", ""),
+                "author": metadata.get("author") or data.get("author", ""),
+                "mode": metadata.get("mode") or data.get("mode", ""),
+                "dataset_name": metadata.get("dataset_name") or data.get("dataset_name", ""),
+                "loudness": metadata.get("loudness") or data.get("loudness", ""),
+                "input_level_dbu": metadata.get("input_level_dbu") or data.get("input_level_dbu", ""),
+                "output_level_dbu": metadata.get("output_level_dbu") or data.get("output_level_dbu", ""),
+                "date": metadata.get("date") or data.get("date", ""),
+            }
+
+            # Filter out empty or None values
+            cleaned_meta = {k: v for k, v in extracted_meta.items() if v != "" and v is not None}
+
+            # Capture any extra custom metadata dictionary keys
+            for k, v in metadata.items():
+                if k not in cleaned_meta and v is not None and v != "":
+                    cleaned_meta[k] = v
+
+            result["internal_metadata"] = cleaned_meta
+
+            if cleaned_meta:
+                log(f"Embedded Metadata Found -> {cleaned_meta}")
             else:
-                # Handle root-level metadata if present
-                result["internal_metadata"] = {
-                    "model_name": data.get("model_name", ""),
-                    "author": data.get("author", ""),
-                    "gear": data.get("gear", ""),
-                }
+                log("No embedded JSON metadata found in file.")
 
     except Exception as e:
-        print(
-            f"[NAMParser] Could not parse internal JSON for {path_obj.name}: {e}")
+        log(f"Could not parse internal JSON for {path_obj.name}: {e}")
 
     return result

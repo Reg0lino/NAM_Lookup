@@ -1,18 +1,20 @@
 from pathlib import Path
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDropEvent
+from PyQt6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDropEvent, QMouseEvent
 from PyQt6.QtWidgets import QFrame, QLabel, QVBoxLayout
 
 
 class DropZone(QFrame):
-    """Interactive drag-and-drop widget for accepting .nam files."""
+    """Interactive drag-and-drop & click-to-browse widget for accepting .nam files."""
 
     file_dropped = pyqtSignal(Path)
+    clicked = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("DropZone")
         self.setAcceptDrops(True)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
 
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -22,7 +24,7 @@ class DropZone(QFrame):
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.subtitle = QLabel(
-            "Extracts physical hardware (amps, cabs, pedals, mics) & searches physical gear"
+            "Click anywhere in this box to browse or drop a .nam file to analyze"
         )
         self.subtitle.setObjectName("DropSubtitle")
         self.subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -30,7 +32,12 @@ class DropZone(QFrame):
         layout.addWidget(self.title)
         layout.addWidget(self.subtitle)
 
-        self.setMinimumSize(QSize(400, 110))
+        self.setMinimumSize(400, 110)
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
+            event.accept()
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():

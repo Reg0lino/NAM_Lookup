@@ -26,10 +26,8 @@ class HardwareAnalysisWorker(QThread):
             logger(
                 f"Starting analysis for: {self.file_path.name} (Deep Mode: {self.deep_mode})")
 
-            # Step 1: Parse local .nam JSON
-            nam_data = parse_nam_file(self.file_path)
-            logger(
-                f"[NAMParser] Stem: '{nam_data.get('stem_name')}', Folder: '{nam_data.get('parent_folder')}'")
+            # Step 1: Parse local .nam JSON and extract embedded metadata
+            nam_data = parse_nam_file(self.file_path, logger=logger)
 
             # Step 2: Query Tone3000 API
             if self.deep_mode:
@@ -39,7 +37,7 @@ class HardwareAnalysisWorker(QThread):
                 tone3000_data = query_tone3000(
                     nam_data.get("stem_name", ""), logger=logger)
 
-            # Step 3: Extract hardware using Groq
+            # Step 3: Extract hardware using Groq (passing embedded metadata + Tone3000)
             result = extract_hardware_with_groq(
                 self.file_path, nam_data, tone3000_data, force_refresh=self.deep_mode, logger=logger
             )

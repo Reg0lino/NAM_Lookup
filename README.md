@@ -1,68 +1,47 @@
-
 # 🎸 NAM Hardware Finder
 
 **NAM Hardware Finder** is a lightweight Python desktop application (PyQt6) designed for guitarists, bassists, and audio engineers using Neural Amp Modeler (`.nam`).
 
-It analyzes dropped `.nam` capture files, identifies the underlying physical gear (amplifiers, cabinets, overdrive pedals, microphones), and launches targeted web searches for the physical hardware while automatically filtering out digital capture/preset clutter (`ToneHunt`, `Tone3000`, NAM forums, etc.).
+It analyzes dropped `.nam` capture files, identifies underlying physical gear (amplifiers, cabinets, overdrive pedals, microphones), and launches targeted web searches (or YouTube video reviews) for the physical hardware while automatically filtering out digital capture site clutter (`ToneHunt`, `Tone3000`, NAM forums, etc.).
+
+---
+
+## 📥 Downloads (For Guitarists & End Users)
+
+Download the latest version from the **[GitHub Releases Page](../../releases/latest)**:
+
+- **`NAM_Hardware_Finder_Setup.exe`** (Recommended Windows Installer with Start Menu & Desktop Shortcuts)
+- **`NAM_Hardware_Finder_Portable.zip`** (Portable version — extract and run `run_app.bat`)
 
 ---
 
 ## ✨ Features
 
 - **⚡ Blazing Fast Extraction (Groq AI):** Powered by Groq’s `llama-3.3-70b-versatile` for sub-second context-aware hardware extractions from chaotic creator filenames.
-- **🎯 Context-Aware Search Precision:**
-  - Detects **Bass** vs. **Guitar** context from parent folders and filenames.
-  - Automatically appends search target terms (`guitar cabinet`, `bass cabinet`, `guitar amplifier`, `microphone`) to prevent generic web search results.
+- **🔍 Dual Search Engines (Google & YouTube):**
+  - **Google Engine:** Searches Google for physical hardware while appending negative search exclusions (`-NAM -Neural -ToneHunt...`).
+  - **YouTube Engine:** Searches YouTube directly for video/audio reviews and gear demos.
+- **🎥 DEMO Mode Switch:** Toggle DEMO mode ON to automatically append `"DEMO"` to all gear search queries.
+- **🎯 Bass vs. Guitar Context Awareness:** Detects bass profiles (`SVT`, `Ampeg`, `Darkglass`, `Bass`) vs. guitar profiles and formats queries with targeted terms (`guitar cabinet`, `bass cabinet`, `guitar amplifier`, `microphone`).
 - **📡 Tone3000 Integration & Deep Search:**
   - **Sanitized Search Query:** Strips knob settings (`Bass 6 Mid 5`) and creator handles before querying Tone3000.
   - **🔍 Deep Tone3000 Search:** Multi-pass phrase search that breaks down complex titles and fetches online metadata.
-  - **🌐 Direct Web Shortcut:** One-click button to jump directly to matched Tone3000 capture pages.
-- **🕒 Cache History Dropdown:** Access all previously analyzed `.nam` captures with **0ms latency** from the "Recent Captures" menu without making new API calls.
+- **📄 Embedded Metadata Inspector:** Click `[ 📄 View NAM Metadata ]` to view all internal JSON attributes (`gear_make`, `gear_model`, `author`, `dBu levels`, `creation date`) in a clean table modal.
+- **📝 Personal Notes System:** Add custom notes to any profile (e.g. *"Great rhythm tone on Les Paul bridge pickup"*), saved locally for future reference.
+- **⭐ Favorites System:** Star your favorite captures and filter your history list with one click.
+- **🕒 Fuzzy Search History:** Filter your capture history live as you type (stripping brackets `[]`, underscores `_`, and hyphens `-`).
+- **📁 Click-to-Browse with Folder Memory:** Click the drop zone to open files directly, automatically remembering your last browsed folder.
 - **🛠️ Live Debug Console:** Real-time log stream showing exact local JSON parses, Tone3000 API requests, and Groq AI responses.
-- **🌙 Modern Dark Theme:** Sleek slate/charcoal PyQt6 interface with non-blocking `QThread` execution for zero UI freezes.
 
 ---
 
-## 📁 Project Structure
-
-```text
-nam-hardware-finder/
-├── config.json              # Local settings & API key storage (gitignored)
-├── cache.json               # Local extraction history & response cache
-├── requirements.txt         # Python dependencies
-├── .gitignore               # Excludes virtual environments, caches, and config
-├── README.md                # Project documentation
-├── run_app.bat              # Windows Desktop launcher batch script
-├── main.py                  # Application entry point
-│
-├── core/                    # System & Configuration Utilities
-│   ├── config_manager.py    # Setting management & API key handling
-│   ├── cache_manager.py     # Hash caching & Recent Captures history manager
-│   └── search_builder.py    # Formats exclusion search URLs & launches browser
-│
-├── services/                # API & Processing Pipeline
-│   ├── nam_parser.py        # Reads local .nam JSON files & metadata
-│   ├── tone3000_api.py      # Query sanitization & Tone3000 search engine
-│   ├── groq_service.py      # Llama 3.3 hardware extraction service
-│   └── ai_service.py        # Pipeline orchestrator
-│
-└── ui/                      # PyQt6 User Interface
-    ├── main_window.py       # Primary GUI layout & event handlers
-    ├── drop_zone.py         # Drag-and-drop file widget
-    ├── hardware_chips.py    # Dynamic action chips & candidate term buttons
-    ├── styles.py            # Dark theme QSS stylesheet
-    └── worker_thread.py     # Background QThread handler
-```
-
----
-
-## 🚀 Quick Start & Installation
+## 🚀 Developer Setup (Running from Source)
 
 ### Prerequisites
 - **Python 3.10+**
-- A free **Groq API Key** (obtainable instantly from [console.groq.com](https://console.groq.com))
+- A free **Groq API Key** (obtainable from [console.groq.com](https://console.groq.com))
 
-### Setup Instructions
+### Installation & Run
 
 1. **Clone the Repository:**
    ```bash
@@ -89,25 +68,44 @@ nam-hardware-finder/
 
 ---
 
-## ⚙️ App Configuration
+## 📁 Project Structure
 
-1. Launch the application.
-2. Enter your **Groq API Key** (`gsk_...`) in the **Groq & App Settings** box at the bottom.
-3. Click **`⚡ Test Groq Key`** to verify your connection.
-4. Click **`Save Settings`**.
+```text
+nam-hardware-finder/
+├── config.json              # Local settings & API key storage (gitignored)
+├── cache.json               # Local extraction history, notes, & response cache
+├── requirements.txt         # Python dependencies
+├── installer.iss            # Inno Setup installer compilation script
+├── LICENSE                  # MIT License
+├── README.md                # Project documentation
+├── run_app.bat              # Windows Desktop launcher batch script
+├── main.py                  # Application entry point
+│
+├── .github/
+│   └── workflows/
+│       └── release.yml      # GitHub Actions automated release pipeline
+│
+├── core/                    # System & Configuration Utilities
+│   ├── config_manager.py    # Setting management & API key handling
+│   ├── cache_manager.py     # Hash caching & Recent Captures history manager
+│   └── search_builder.py    # Formats exclusion search URLs & launches browser
+│
+├── services/                # API & Processing Pipeline
+│   ├── nam_parser.py        # Reads local .nam JSON files & metadata
+│   ├── tone3000_api.py      # Query sanitization & Tone3000 search engine
+│   └── groq_service.py      # Llama 3.3 hardware extraction service
+│
+└── ui/                      # PyQt6 User Interface
+    ├── main_window.py       # Primary GUI layout & event handlers
+    ├── drop_zone.py         # Clickable drag-and-drop file widget
+    ├── hardware_chips.py    # Dynamic action chips & candidate term buttons
+    ├── metadata_dialog.py   # Embedded JSON metadata inspector modal
+    ├── styles.py            # Dark theme QSS stylesheet
+    └── worker_thread.py     # Background QThread handler
+```
 
 ---
 
-## 💡 How To Use
+## 📄 License
 
-1. **Drag and drop** any `.nam` file into the top drop zone.
-2. The application extracts hardware items and displays **Primary Hardware Chips** (`[ 🔊 Peavey 5150 guitar amplifier ]`, `[ 📢 Mesa OS guitar cabinet ]`, `[ 🎙️ Shure SM57 microphone ]`).
-3. **Candidate Terms Row:** Click any candidate badge (`[ 🔎 Vox AC30 Top Boost ]`) to run a speculative Google search.
-4. **History Dropdown:** Select any previously dropped file from `[ 🕒 Recent Captures ]` to load its results instantly from local cache.
-5. **Targeted Web Searches:** Click any chip to search Google for physical hardware while excluding digital capture site clutter (`-NAM -Neural -Tone3000 -ToneHunt ...`).
-
----
-
-📄 License
-
-MIT License
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
