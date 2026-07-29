@@ -24,14 +24,17 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup -y
+
       - name: Build with PyInstaller (--onedir)
         run: |
           pyinstaller --noconfirm --onedir --windowed --name="NAM_Hardware_Finder" main.py
 
       - name: Compile Inno Setup Installer
-        uses: Sayedihashimi/action-iscc@v1.2.0
-        with:
-          script: installer.iss
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
       - name: Create Portable Zip
         run: |
