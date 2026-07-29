@@ -8,30 +8,48 @@ It analyzes dropped `.nam` capture files, identifies underlying physical gear (a
 
 ## 📥 Downloads (For Guitarists & End Users)
 
-Download the latest version from the **[GitHub Releases Page](../../releases/latest)**:
+Download the latest release (**v1.0.2**) from the **[GitHub Releases Page](../../releases/latest)**:
 
-- **`NAM_Hardware_Finder_Setup.exe`** (Recommended Windows Installer with Start Menu & Desktop Shortcuts)
-- **`NAM_Hardware_Finder_Portable.zip`** (Portable version — extract and run `run_app.bat`)
+- **`NAM_Hardware_Finder_Setup.exe`** (Recommended Windows Installer with Start Menu, Desktop Shortcuts, & Custom App Icon)
+- **`NAM_Hardware_Finder_Portable.zip`** (Portable version — extract anywhere and run `run_app.bat` or `NAM_Hardware_Finder.exe`)
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-- **⚡ Blazing Fast Extraction (Groq AI):** Powered by Groq’s `llama-3.3-70b-versatile` for sub-second context-aware hardware extractions from chaotic creator filenames.
-- **🔍 Dual Search Engines (Google & YouTube):**
-  - **Google Engine:** Searches Google for physical hardware while appending negative search exclusions (`-NAM -Neural -ToneHunt...`).
-  - **YouTube Engine:** Searches YouTube directly for video/audio reviews and gear demos.
+- **⚡ Blazing Fast Extraction (Groq AI):** Powered by Groq’s `llama-3.3-70b-versatile` model for sub-second context-aware hardware extractions from chaotic creator filenames.
+- **🔍 Dual Search Engine Switch (Google vs. YouTube):**
+  - **Google Mode:** Searches for physical hardware specifications while automatically excluding digital capture sites (`-NAM -Neural -ToneHunt...`).
+  - **YouTube Mode:** Searches YouTube directly for video/audio gear reviews and demos (`demo review`).
 - **🎥 DEMO Mode Switch:** Toggle DEMO mode ON to automatically append `"DEMO"` to all gear search queries.
 - **🎯 Bass vs. Guitar Context Awareness:** Detects bass profiles (`SVT`, `Ampeg`, `Darkglass`, `Bass`) vs. guitar profiles and formats queries with targeted terms (`guitar cabinet`, `bass cabinet`, `guitar amplifier`, `microphone`).
 - **📡 Tone3000 Integration & Deep Search:**
   - **Sanitized Search Query:** Strips knob settings (`Bass 6 Mid 5`) and creator handles before querying Tone3000.
   - **🔍 Deep Tone3000 Search:** Multi-pass phrase search that breaks down complex titles and fetches online metadata.
-- **📄 Embedded Metadata Inspector:** Click `[ 📄 View NAM Metadata ]` to view all internal JSON attributes (`gear_make`, `gear_model`, `author`, `dBu levels`, `creation date`) in a clean table modal.
+- **📄 Embedded Metadata Inspector:** Click `[ 📄 View NAM Metadata ]` to view all internal JSON attributes (`gear_make`, `gear_model`, `author`, `dBu levels`, `date created`) in a clean table modal.
 - **📝 Personal Notes System:** Add custom notes to any profile (e.g. *"Great rhythm tone on Les Paul bridge pickup"*), saved locally for future reference.
 - **⭐ Favorites System:** Star your favorite captures and filter your history list with one click.
 - **🕒 Fuzzy Search History:** Filter your capture history live as you type (stripping brackets `[]`, underscores `_`, and hyphens `-`).
 - **📁 Click-to-Browse with Folder Memory:** Click the drop zone to open files directly, automatically remembering your last browsed folder.
 - **🛠️ Live Debug Console:** Real-time log stream showing exact local JSON parses, Tone3000 API requests, and Groq AI responses.
+
+---
+
+## 📜 Release History
+
+### **v1.0.2 (Current)**
+- **Custom Application Icon:** Integrated crisp 256x256 `.ico` icon across app window, taskbar, executable file, and setup installer.
+- **Taskbar AppID Fix:** Configured Windows process explicit ID so the app taskbar icon renders properly under Windows 10/11.
+- **Automated GitHub Release Pipeline:** Added Inno Setup compilation step to GitHub Actions runner.
+
+### **v1.0.1**
+- **Unified Search Engine Switch:** Added single-toggle search engine selector (`Google` vs `YouTube`).
+- **Personal Capture Notes:** Added editable personal notes box in Main Window and Metadata Inspector dialog.
+- **⭐ Favorites System & Fuzzy Search:** Added favorite star toggle and real-time normalized capture filter bar.
+- **Click-to-Browse Drop Zone:** Enabled clicking drop zone to open Windows File Dialog with folder memory (`I:\Assorted Synth & DAW\!NAM`).
+
+### **v1.0.0**
+- Initial Release powered by Groq Llama 3.3 AI, Tone3000 API integration, and PyQt6 dark interface.
 
 ---
 
@@ -76,6 +94,7 @@ nam-hardware-finder/
 ├── cache.json               # Local extraction history, notes, & response cache
 ├── requirements.txt         # Python dependencies
 ├── installer.iss            # Inno Setup installer compilation script
+├── icon.ico                 # 256x256 Application Icon
 ├── LICENSE                  # MIT License
 ├── README.md                # Project documentation
 ├── run_app.bat              # Windows Desktop launcher batch script
