@@ -1,41 +1,58 @@
-# 🎸 NAM Hardware Finder
+# 🎸 NAM Hardware Finder v1.0.3
 
-**NAM Hardware Finder** is a lightweight Python desktop application (PyQt6) designed for guitarists, bassists, and audio engineers using Neural Amp Modeler (`.nam`).
+Neural Amp Modeler (`.nam`) captures are downloaded from countless creators, forums, and repositories, but **there is no common naming convention** for these files. Many captures have chaotic, cryptic filenames (e.g. `Full-Rig-Peavey-5150-No-boost-Mesa-OS-SM57---jp_is_out_of_tune.nam`) or lack complete internal metadata, making it frustrating to figure out what physical amplifiers, speaker cabinets, or microphones were actually used.
 
-It analyzes dropped `.nam` capture files, identifies underlying physical gear (amplifiers, cabinets, overdrive pedals, microphones), and launches targeted web searches (or YouTube video reviews) for the physical hardware while automatically filtering out digital capture site clutter (`ToneHunt`, `Tone3000`, NAM forums, etc.).
+**NAM Hardware Finder** solves this by using high-speed AI to instantly analyze `.nam` filenames, parent folder context, and embedded tags to extract the exact underlying physical gear. It gives you 1-click access to Google hardware specs and YouTube video reviews while filtering out as much digital preset clutter as possible.
 
----
+This application works best with a **FREE** Groq Llama 3.3 API. See below for directions on quickly getting that API. 
 
-## 📥 Downloads (For Guitarists & End Users)
+Note: This is **NOT GROK**, This is a different site that hosts a FREE Llama build for small tasks like this.
 
-Download the latest release (**v1.0.2**) from the **[GitHub Releases Page](../../releases/latest)**:
 
-- **`NAM_Hardware_Finder_Setup.exe`** (Recommended Windows Installer with Start Menu, Desktop Shortcuts, & Custom App Icon)
-- **`NAM_Hardware_Finder_Portable.zip`** (Portable version — extract anywhere and run `run_app.bat` or `NAM_Hardware_Finder.exe`)
+*YES, I used **Google Gemini 3.6** to hurry this along, but the app is solid.*
 
 ---
 
-## ✨ Key Features
+## 📥 Download Assets
 
-- **⚡ Blazing Fast Extraction (Groq AI):** Powered by Groq’s `llama-3.3-70b-versatile` model for sub-second context-aware hardware extractions from chaotic creator filenames.
+Download your preferred version under **Assets** on the **[GitHub Releases Page](../../releases/latest)**:
+
+- **`NAM_Hardware_Finder_Setup.exe`** — Recommended Windows Installer (Includes Start Menu & Desktop Shortcuts).
+- **`NAM_Hardware_Finder_Portable.zip`** — Portable version (Extract anywhere and run `run_app.bat` or `NAM_Hardware_Finder.exe`).
+
+If Windows hits you with a Defender Smart Screen, hit more info, then run.
+---
+
+## 🔥 Features Summary
+
+- **⚡ Blazing Fast AI Extraction (Groq Llama 3.3):** Sub-second context-aware hardware extractions from chaotic creator filenames.
 - **🔍 Dual Search Engine Switch (Google vs. YouTube):**
   - **Google Mode:** Searches for physical hardware specifications while automatically excluding digital capture sites (`-NAM -Neural -ToneHunt...`).
   - **YouTube Mode:** Searches YouTube directly for video/audio gear reviews and demos (`demo review`).
 - **🎥 DEMO Mode Switch:** Toggle DEMO mode ON to automatically append `"DEMO"` to all gear search queries.
-- **🎯 Bass vs. Guitar Context Awareness:** Detects bass profiles (`SVT`, `Ampeg`, `Darkglass`, `Bass`) vs. guitar profiles and formats queries with targeted terms (`guitar cabinet`, `bass cabinet`, `guitar amplifier`, `microphone`).
+- **🎯 Targeted Bass vs. Guitar Context Rules:** Detects bass profiles vs. guitar profiles and formats search queries with targeted terms (`guitar cabinet`, `bass cabinet`, `guitar amplifier`, `microphone`).
 - **📡 Tone3000 Integration & Deep Search:**
   - **Sanitized Search Query:** Strips knob settings (`Bass 6 Mid 5`) and creator handles before querying Tone3000.
   - **🔍 Deep Tone3000 Search:** Multi-pass phrase search that breaks down complex titles and fetches online metadata.
-- **📄 Embedded Metadata Inspector:** Click `[ 📄 View NAM Metadata ]` to view all internal JSON attributes (`gear_make`, `gear_model`, `author`, `dBu levels`, `date created`) in a clean table modal.
-- **📝 Personal Notes System:** Add custom notes to any profile (e.g. *"Great rhythm tone on Les Paul bridge pickup"*), saved locally for future reference.
-- **⭐ Favorites System:** Star your favorite captures and filter your history list with one click.
-- **🕒 Fuzzy Search History:** Filter your capture history live as you type (stripping brackets `[]`, underscores `_`, and hyphens `-`).
-- **📁 Click-to-Browse with Folder Memory:** Click the drop zone to open files directly, automatically remembering your last browsed folder.
-- **🛠️ Live Debug Console:** Real-time log stream showing exact local JSON parses, Tone3000 API requests, and Groq AI responses.
+- **📄 Embedded JSON Metadata Inspector:** Click `[ 📄 View NAM Metadata ]` to view all internal JSON attributes (`gear_make`, `gear_model`, `author`, `dBu levels`, `date created`) in a clean table modal.
+- **📝 Personal Capture Notes:** Save custom notes to any profile (e.g. *"Great rhythm tone on Les Paul bridge pickup"*), saved locally in your cache for future reference.
+- **⭐ Favorites & Fuzzy Search Filter:** Star your favorite captures and filter your history list in real time as you type (stripping brackets `[]`, underscores `_`, and hyphens `-`).
+- **📁 Click-to-Browse with Folder Memory:** Click the drop zone box to open files directly, remembering your last browsed folder location.
+- **🛠️ Live Debug Console:** Real-time log stream showing exact local JSON parses, Tone3000 API requests, and AI responses.
 
 ---
 
-## 🚀 Developer Setup (Running from Source)
+## 🚀 1-Minute Quick Start Guide
+
+1. Get a **free Groq API Key** in 30 seconds from [console.groq.com](https://console.groq.com).
+2. Launch **NAM Hardware Finder**.
+3. Paste your Groq key into the **Groq & App Settings** field at the bottom and click **`⚡ Test Groq Key`**.
+4. Click **`Save Settings`**.
+5. Drag and drop any `.nam` file or click the box to browse!
+
+---
+
+## 🛠️ Developer Setup (Running from Source)
 
 ### Prerequisites
 - **Python 3.10+**
