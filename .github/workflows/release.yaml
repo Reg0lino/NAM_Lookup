@@ -31,9 +31,13 @@ jobs:
         run: |
           choco install innosetup -y
 
-      - name: Build with PyInstaller (--onedir)
+      - name: Build with PyInstaller (--onedir with icon)
         run: |
-          pyinstaller --noconfirm --onedir --windowed --name="NAM_Hardware_Finder" main.py
+          pyinstaller --noconfirm --onedir --windowed --icon=icon.ico --name="NAM_Hardware_Finder" main.py
+
+      - name: Copy icon.ico to dist folder
+        run: |
+          copy icon.ico dist\NAM_Hardware_Finder\
 
       - name: Compile Inno Setup Installer
         run: |
