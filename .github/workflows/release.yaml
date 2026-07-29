@@ -25,15 +25,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install pyinstaller certifi
 
       - name: Install Inno Setup
         run: |
           choco install innosetup -y
 
-      - name: Build with PyInstaller (--onedir with icon)
+      - name: Build with PyInstaller (--onedir with certifi SSL data)
         run: |
-          pyinstaller --noconfirm --onedir --windowed --icon=icon.ico --name="NAM_Hardware_Finder" main.py
+          pyinstaller --noconfirm --onedir --windowed --icon=icon.ico --collect-data certifi --name="NAM_Hardware_Finder" main.py
 
       - name: Copy icon.ico to dist folder
         run: |

@@ -1,10 +1,23 @@
 import hashlib
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
 
-CACHE_FILE = Path("cache.json")
+
+def get_app_dir() -> Path:
+    """Returns %APPDATA%/NAM_Hardware_Finder for user settings & cache."""
+    appdata = os.getenv("APPDATA")
+    if appdata:
+        path = Path(appdata) / "NAM_Hardware_Finder"
+    else:
+        path = Path.home() / ".nam_hardware_finder"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+CACHE_FILE = get_app_dir() / "cache.json"
 
 
 def _get_file_hash(file_path: Path) -> str:
@@ -46,6 +59,7 @@ def get_cached_result(file_path: Path) -> dict | None:
     try:
         with open(CACHE_FILE, "r", encoding="utf-8") as f:
             cache_data = json.load(f)
+
             entry = cache_data.get(cache_key) or cache_data.get(file_hash)
             if entry and isinstance(entry, dict) and "extraction" in entry:
                 result = entry["extraction"]
@@ -155,7 +169,6 @@ def get_recent_history(filter_text: str = "", favorites_only: bool = False) -> l
             extraction = entry.get("extraction", {})
             primary_search = extraction.get("primary_search", "")
 
-            # Fuzzy match check across filename, notes, and search terms
             if norm_filter:
                 combined_targets = f"{fname} {notes} {primary_search}"
                 norm_target = normalize_search_string(combined_targets)
