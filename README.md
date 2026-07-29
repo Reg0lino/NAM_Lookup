@@ -35,24 +35,6 @@ Download the latest release (**v1.0.2**) from the **[GitHub Releases Page](../..
 
 ---
 
-## 📜 Release History
-
-### **v1.0.2 (Current)**
-- **Custom Application Icon:** Integrated crisp 256x256 `.ico` icon across app window, taskbar, executable file, and setup installer.
-- **Taskbar AppID Fix:** Configured Windows process explicit ID so the app taskbar icon renders properly under Windows 10/11.
-- **Automated GitHub Release Pipeline:** Added Inno Setup compilation step to GitHub Actions runner.
-
-### **v1.0.1**
-- **Unified Search Engine Switch:** Added single-toggle search engine selector (`Google` vs `YouTube`).
-- **Personal Capture Notes:** Added editable personal notes box in Main Window and Metadata Inspector dialog.
-- **⭐ Favorites System & Fuzzy Search:** Added favorite star toggle and real-time normalized capture filter bar.
-- **Click-to-Browse Drop Zone:** Enabled clicking drop zone to open Windows File Dialog with folder memory (`I:\Assorted Synth & DAW\!NAM`).
-
-### **v1.0.0**
-- Initial Release powered by Groq Llama 3.3 AI, Tone3000 API integration, and PyQt6 dark interface.
-
----
-
 ## 🚀 Developer Setup (Running from Source)
 
 ### Prerequisites
